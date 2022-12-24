@@ -1,0 +1,25 @@
+<form id="form" enctype=" multipart/form-data">
+    <input type="file" name="video" />
+    <input type="submit" value="Enviar" id="btn" />
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+    $('#btn').click(function () {
+        var form = new FormData($('#form')[0]);
+        $.ajax({
+            type: 'POST',
+            url: 'http://app-mazter.develop/tv/videotv_save',
+            data: form,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (r) {
+                
+            },
+
+        });
+        return false;
+    })
+
+</script>
