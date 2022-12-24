@@ -8,12 +8,8 @@
     $('#btn').click(function () {
         var form = new FormData($('#form')[0]);
         $.ajax({
-            type: 'POST',
-            url: 'https://app.mazter.dev/tv/videotv_save',
-            data: form,
-            cache: false,
-            contentType: false,
-            processData: false,
+            type: 'GET',
+            url: 'https://app.mazter.dev/api/pato',
             success: function (r) {
                 
             },
@@ -22,4 +18,8 @@
         return false;
     })
 
-</script>
+</script>    
+        data: form,
+cache: false,
+contentType: false,
+processData: false,
