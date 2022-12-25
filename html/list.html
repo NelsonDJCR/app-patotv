@@ -10,7 +10,7 @@
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
-    </script>
+        </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
@@ -28,15 +28,16 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/designer/tvo/list">Videos en vivo</a>
+                                <a class="nav-link active" aria-current="page" href="/designer/tvo/list">Videos en
+                                    vivo</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link " aria-current="page" href="/tvo/create">Agregar video</a>
                             </li>
-                            
-                            
+
+
                         </ul>
-                       
+
                     </div>
                 </div>
             </nav>
@@ -53,50 +54,12 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Titulo</th>
-                                            {{-- <th scope="col">Publicando en</th> --}}
                                             <th scope="col" style="width: 86px">Video</th>
                                             <th scope="col" style="width: 80px">Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($videos as $i)
-                                            <tr>
-                                                <td>{{ $i->name }}</td>
-                                                {{-- <td>
-                                                    @if ($i->amolatina)
-                                                        Amolatina &nbsp;&nbsp;
-                                                    @endif
-                                                    @if ($i->prime)
-                                                        Prime &nbsp;&nbsp;
-                                                    @endif
-                                                    @if ($i->mandala)
-                                                        Mandala &nbsp;&nbsp;
-                                                    @endif
-                                                </td> --}}
-                                                <td>
-                                                    <a target="_blank" href="{{ asset('storage/' . $i->route) }}"><img
-                                                            src="https://www.pngitem.com/pimgs/m/115-1156160_circled-play-icon-blue-circle-hd-png-download.png"
-                                                            style="height: 32px;margin-left: 7px;" alt=""></a>
-                                                </td>
-                                                {{-- {{  $i->state == 1 ? 'checked':''   }} --}}
-                                                <td>
-                                                    <ul class="ms-list ms-list-display">
 
-
-                                                        <li>
-                                                            <label class="ms-switch">
-                                                                <input onclick="changeState({{ $i->id }})"
-                                                                    type="checkbox"
-                                                                    {{ $i->state == 1 ? 'checked' : '' }}>
-                                                                <span
-                                                                    class="ms-switch-slider ms-switch-primary round"></span>
-                                                            </label>
-                                                            <span> </span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -111,36 +74,29 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    function uploadVideo() {
-        var form = new FormData($('#form_tv')[0]);
-        $.ajax({
-            type: "POST",
-            url: '/designer/tvo/store',
-            data: form,
-            processData: false,
-            contentType: false,
-            success: function(r) {
-                if (r.code == 200) {
-                    Swal.fire('¡Perfecto!', 'Datos insertados correctamente', 'success').then(function() {
-                        window.location = '/designer/tv/list';
-                    });
-                } else
-                if (r.code == 406) {
-                    Swal.fire(r.msg, 'Intente nuevamente', 'warning')
-                } else {
-                    Swal.fire('¡Error!', 'Fallo en el servidor', 'error')
-                }
-            },
-        });
-        return false;
-    }
 
-    function changeState(id, state) {
-        $.post('/designer/tvo/changeStatus', {
-            id: id,
-            _token: $('meta[name="csrf-token"]').attr('content')
-        }).done(function(e) {
+    $(document).ready(function () {
+        fill_table()
+    });
 
+    function fill_table() {
+        var tbody = $('tbody')
+        var url_play = 'https://www.pngitem.com/pimgs/m/115-1156160_circled-play-icon-blue-circle-hd-png-download.png'
+        var url_bucket = 'https://bucket-nelsondjcr-patotv.s3.amazonaws.com/';
+        tbody.html(``)
+        $.post(`https://app.mazter.dev/api/tv/pt_video_list`, { customer_id: 1 }).done(function (response) {
+            $.each(response.videos, function (key, i) {
+                tbody.append(`<tr>
+                    <td>${i.video_title}</td>
+                    <td>
+                        <a target="_blank" href="${url_bucket}${i.video_route}">
+                            <img src="${url_play}"
+                                style="height: 32px;margin-left: 7px;" alt=""></a>
+                    </td>
+                    <td>Active</td>
+                </tr>`)
+            })
         });
     }
+
 </script>

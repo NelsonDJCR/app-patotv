@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{{ asset('images/live.gif') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <title>Pato tv</title>
+</head>
+
+<body>
+    <!-- {{-- <img id="icon_tv" src="{{ asset('https://i.postimg.cc/ZnKCfH09/logo-final.png') }}" alt=""> --}}
+    {{-- <img class="icon_menu animate__animated  animate__backInDown" src="https://i.postimg.cc/WpyWbV82/image.jpg"> --}}
+    {{-- <div class="selector_video">
+        <div class="container_tvs">
+            <p onclick="window.location = '/tv?tv=mandala';">Mandala</p>
+            <p onclick="window.location = '/tv?tv=prime';">Prime Date</p>
+            <p onclick="window.location = '/tv?tv=amolatina';">AmoLatina </p>
+        </div>
+    </div> --}} -->
+    <div class="container-videos">
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+    <script>
+        $(document).ready(function () {
+            var search = $(location).attr('search')
+            if (search.split('=')[1]) {
+                loadVideos()
+            } else {
+                loadVideos()
+            }
+        });
+
+
+        var next = 0;
+
+        function videoend(video_end, total_videos, actuallity_videos) {
+            next = video_end + 1;
+            // Automatical update
+            // $.get('/video_cuantity').done(function(e) {
+            //     console.log(`actuallity_videos: ${actuallity_videos} == ${e}`);
+            //     if (actuallity_videos != e) {
+            //         location.reload()
+            //     }
+            // });
+
+            if (video_end == total_videos) {
+                $('.video' + video_end).css('display', 'none');
+                $('.video' + next).css('display', 'none');
+                $('.video0').css('display', 'block').get(0).play()
+                return false;
+            }
+
+
+            play(video_end)
+
+        }
+
+        function loadVideos() {
+            $('#icon_tv').focus()
+            var url_bucket = 'https://bucket-nelsondjcr-patotv.s3.amazonaws.com/';
+            $('.container-videos').html(``)
+            $.post('https://app.mazter.dev/api/tv/pt_video_list', { customer_id: 1 }).done(function (e) {
+                var total_videos = e.videos.length - 1;
+                var actuallity_videos = e.actuallity_videos;
+                var postition_actual = 1;
+                var pos = 0;
+                $.each(e.videos, function (key, i) {
+
+                    $('.container-videos').append(`
+                    <video id="video${pos}"  class="videop video${pos}"  muted style="display:none;" data-id="${pos}" onended="videoend(${pos}, ${total_videos},${actuallity_videos})">
+                        <source src="${url_bucket}${i.video_route}" type="video/mp4" />
+                        </video>
+                        `)
+                    pos = pos + 1;
+                })
+                $('.video0').css('display', 'block').get(0).play()
+                return false;
+            });
+
+        }
+
+        $('.selector_video').mouseenter(function () {
+            console.log('entro');
+            $('.icon_menu').css('display', 'block')
+            $('.container_tvs').css('display', 'block')
+        })
+        $('.selector_video').mouseleave(function () {
+            console.log('salio');
+            $('.icon_menu').css('display', 'none')
+            $('.container_tvs').css('display', 'none')
+        })
+
+
+
+        function play(video_actual) {
+
+            var vid = document.getElementById("video" + video_actual);
+            vid.currentTime = 0;
+            $('.video' + video_actual).css('display', 'none');
+
+            var next = video_actual + 1;
+            $('.video' + next).css('display', 'block').get(0).play()
+            return false;
+
+        }
+
+        function verifyUpdates() {
+            $.get('/video_cuantity').done(function (e) {
+                return e
+            });
+        }
+
+
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background: black !important;
+        }
+
+        .selector_video {
+            position: absolute;
+            width: 5px;
+            height: 100vh;
+            background: rgba(255, 0, 0, 0);
+            transition: 0.2s all;
+            display: flex;
+            flex-direction: column;
+
+            /* width: 300px;
+            background: #009EFB; */
+        }
+
+        .selector_video:hover {
+            width: 300px;
+            background: #009EFB;
+        }
+
+        .container_tvs {
+            display: flex;
+            flex-direction: column;
+            margin-top: 40vh;
+            display: none;
+        }
+
+        .container_tvs>p {
+            width: 92%;
+            padding: 15px 0px;
+            text-align: center;
+            border-radius: 20px;
+            border: 1px solid white;
+            margin-left: 4%;
+            margin-bottom: 18px;
+            transition: .2s all;
+            color: white;
+            cursor: pointer;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        .icon_menu {
+            z-index: 9;
+            position: absolute;
+            border-radius: 50%;
+            width: 107px;
+            margin-left: 99px;
+            margin-top: 20px;
+            display: none;
+            font-size: 20px;
+        }
+
+        .container_tvs>p:hover {
+            background-image: url(https://c.tenor.com/R7k5oUzO5AgAAAAC/perfect-loop.gif);
+            font-size: 22px;
+        }
+
+        #icon_tv {
+            right: 0;
+            bottom: 0;
+            position: absolute;
+            width: 80px;
+            margin-right: 25px;
+            margin-bottom: 30px;
+        }
+
+        .videop {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</body>
+
+</html>
