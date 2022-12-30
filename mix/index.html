@@ -72,7 +72,7 @@
                 $.each(e.videos, function (key, i) {
 
                     $('.container-videos').append(`
-                    <video id="video${pos}"  class="videop video${pos}"  muted style="display:none;" data-id="${pos}" onended="videoend(${pos}, ${total_videos},${actuallity_videos})">
+                    <video controls id="video${pos}"  class="videop video${pos}"  muted style="display:none;" data-id="${pos}" onended="videoend(${pos}, ${total_videos},${actuallity_videos})">
                         <source src="${url_bucket}${i.video_route}" type="video/mp4" />
                         </video>
                         `)
