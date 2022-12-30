@@ -105,13 +105,14 @@
             Loading...
         </button>`)
 
-
+        /* https://app.mazter.dev/api/tv/pt_video_save*/
+        /* http://app-mazter.develop/tv/pt_video_save* */
 
         var form = new FormData($('#form')[0]);
         $.ajax({
             type: 'POST',
             data: form,
-            url: 'https://app.mazter.dev/api/tv/pt_video_save',
+            url: 'http://app-mazter.develop/api/tv/pt_video_save',
             cache: false,
             contentType: false,
             processData: false,
