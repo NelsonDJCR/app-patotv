@@ -38,6 +38,87 @@
 {{-- Master --}}
 
 
+        var next = 0;
+
+        function videoend(video_end, total_videos, actuallity_videos) {
+            next = video_end + 1;
+            // Automatical update
+            // $.get('/video_cuantity').done(function(e) {
+            //     console.log(`actuallity_videos: ${actuallity_videos} == ${e}`);
+            //     if (actuallity_videos != e) {
+            //         location.reload()
+            //     }
+            // });
+
+            if (video_end == total_videos) {
+                $('.video' + video_end).css('display', 'none');
+                $('.video' + next).css('display', 'none');
+                $('.video0').css('display', 'block').get(0).play()
+                return false;
+            }
+
+
+            play(video_end)
+
+        }
+
+        function loadVideos() {
+            $('#icon_tv').focus()
+            var url_bucket = 'https://bucket-nelsondjcr-patotv.s3.amazonaws.com/';
+            $('.container-videos').html(``)
+            $.post('https://app.mazter.dev/api/tv/pt_video_list', { customer_id: 1 }).done(function (e) {
+                var total_videos = e.videos.length - 1;
+                var actuallity_videos = e.actuallity_videos;
+                var postition_actual = 1;
+                var pos = 0;
+                $.each(e.videos, function (key, i) {
+
+                    $('.container-videos').append(`
+                    <video controls id="video${pos}"  class="videop video${pos}"  muted style="display:none;" data-id="${pos}" onended="videoend(${pos}, ${total_videos},${actuallity_videos})">
+                        <source src="${url_bucket}${i.video_route}" type="video/mp4" />
+                        </video>
+                        `)
+                    pos = pos + 1;
+                })
+                $('.video0').css('display', 'block').get(0).play()
+                return false;
+            });
+
+        }
+
+        $('.selector_video').mouseenter(function () {
+            console.log('entro');
+            $('.icon_menu').css('display', 'block')
+            $('.container_tvs').css('display', 'block')
+        })
+        $('.selector_video').mouseleave(function () {
+            console.log('salio');
+            $('.icon_menu').css('display', 'none')
+            $('.container_tvs').css('display', 'none')
+        })
+
+
+
+        function play(video_actual) {
+
+            var vid = document.getElementById("video" + video_actual);
+            vid.currentTime = 0;
+            $('.video' + video_actual).css('display', 'none');
+
+            var next = video_actual + 1;
+            $('.video' + next).css('display', 'block').get(0).play()
+            return false;
+
+        }
+
+        function verifyUpdates() {
+            $.get('/video_cuantity').done(function (e) {
+                return e
+            });
+        }
+
+
+    </script>
     <style>
         .icon {
             margin: auto;
